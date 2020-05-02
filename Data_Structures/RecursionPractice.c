@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
+#include <limits.h>
 
 int sum(int n)
 {
@@ -17,29 +18,25 @@ int min(int a, int b)
 
 int find_min_array(int *array, int n)
 {
-  if (array == NULL || n == 0)
-    return 0;
-
   if (n == 1)
     return array[0];
 
   return min(array[n - 1], find_min_array(array, n - 1));
 }
 
-int find_min_array_fancy(int *array, int n)
+int fancy_find_min_array(int *array, int n)
 {
   if (array == NULL || n == 0)
-    return 0;
-
-  if (n == 1)
+    return INT_MIN;
+  else if (n == 1)
     return array[0];
-
-  return min(array[0], find_min_array_fancy(array + 1, n - 1));
+  else
+    return min(array[0], fancy_find_min_array(array + 1, n - 1));
 }
 
-int find_min_array_super_fancy(int *array, int n)
+int super_fancy_find_min_array(int *array, int n)
 {
-  return (n == 1 ? array[0] : find_min_array_super_fancy(array + 1, n - 1));
+  return (n == 1) ? array[0] : min(array[0], super_fancy_find_min_array(array + 1, n - 1));
 }
 
 int factorial(int n)
@@ -58,28 +55,26 @@ int max(int a, int b)
 int find_max_array(int *array, int n)
 {
   if (array == NULL || n == 0)
-    return 0;
-
-  if (n == 1)
+    return INT_MIN;
+  else if (n == 0)
     return array[0];
-
-  return max(array[n - 1], find_max_array(array, n - 1));
+  else
+    return max(array[n - 1], find_max_array(array, n - 1));
 }
 
-int find_max_array_fancy(int *array, int n)
+int fancy_find_max_array(int *array, int n)
 {
   if (array == NULL || n == 0)
-    return 0;
-
-  if (n == 1)
+    return INT_MIN;
+  else if (n == 1)
     return array[0];
-
-  return max(array[0], find_max_array_fancy(array + 1, n - 1));
+  else
+    return max(array[0], fancy_find_max_array(array + 1, n - 1));
 }
 
-int find_max_array_super_fancy(int *array, int n)
+int super_fancy_max_array(int *array, int n)
 {
-  return (n == 1 ? array[n - 1] : find_max_array_fancy(array, n - 1));
+  return (n == 1) ? array[0] : max(array[0], fancy_find_max_array(array + 1, n - 1));
 }
 
 int mult(int a, int b)
@@ -100,6 +95,7 @@ void print_string(char *str, int n)
 
   printf("%c", str[0]);
   print_string(str + 1, n - 1);
+
 }
 
 void print_string_alternative(char *str, int n)
@@ -112,6 +108,7 @@ void print_string_alternative(char *str, int n)
 
   print_string_alternative(str, n - 1);
   printf("%c", str[n - 1]);
+
 }
 
 void print_string_fancy(char *str)
@@ -124,18 +121,6 @@ void print_string_fancy(char *str)
 
   printf("%c", *str);
   print_string_fancy(str + 1);
-}
-
-void print_string_reverse(char *str, int n)
-{
-  if (str == NULL || n == 0)
-  {
-    printf("\n");
-    return;
-  }
-
-  printf("%c", str[n - 1]);
-  print_string_reverse(str, n - 1);
 
 }
 
@@ -149,34 +134,30 @@ void print_string_reverse_fancy(char *str, int n, int len)
 
   if (n == len)
     printf("\n");
+
 }
 
 unsigned int power(int a, int n)
 {
-  if (a == 0)
-    return 0;
-
   if (n == 0)
     return 1;
-
+  else if (a == 0)
+    return 0;
   return a * power(a, n - 1);
 }
-
 
 unsigned int super_fancy_power(int a, int n)
 {
   int result;
 
+  if (n == 0)
+    return 1;
   if (a == 0)
     return 0;
 
-  if (n == 0)
-    return 1;
-
   result = super_fancy_power(a, n / 2);
-  return result * result * ((n % 2 == 0) ? 1 : a);
-  
 
+  return result * result * ((n % 2 == 0) ? 1 : a);
 }
 
 int sumDigit(int n)
@@ -187,12 +168,12 @@ int sumDigit(int n)
   return (n % 10) + sumDigit(n / 10);
 }
 
-int recursive_binary_search(int *array, int lo, int hi, int key)
+int binary_search_recursive(int *array, int lo, int hi, int key)
 {
   int mid;
 
   if (array == NULL)
-    return 0;
+    return INT_MIN;
 
   if (lo > hi)
     return 0;
@@ -200,13 +181,13 @@ int recursive_binary_search(int *array, int lo, int hi, int key)
   mid = lo + (hi - lo) / 2;
 
   if (key < array[mid])
-    return recursive_binary_search(array, lo, mid - 1, key);
+    return binary_search_recursive(array, lo, mid - 1, key);
   else if (key > array[mid])
-    return recursive_binary_search(array, mid - 1, hi, key);
+    return binary_search_recursive(array, mid + 1, hi, key);
   else
     return 1;
-
 }
+
 int main(void)
 {
   return 0;
