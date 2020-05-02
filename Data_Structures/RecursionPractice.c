@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
+#define MAX_RAND_VAL 60
 
 int sum(int n)
 {
@@ -175,7 +177,7 @@ unsigned int super_fancy_power(int a, int n)
 
   result = super_fancy_power(a, n / 2);
   return result * result * ((n % 2 == 0) ? 1 : a);
-  
+
 
 }
 
@@ -207,6 +209,23 @@ int recursive_binary_search(int *array, int lo, int hi, int key)
     return 1;
 
 }
+
+int *create_array(int n)
+{
+  int i;
+  int *array;
+
+  if (n <= 0)
+    return NULL;
+
+  array = malloc(sizeof(int) * n);
+
+  for (i = 0; i < n; i++)
+    array[i] = rand() % MAX_RAND_VAL + 1;
+
+  return array;
+}
+
 int main(void)
 {
   return 0;
