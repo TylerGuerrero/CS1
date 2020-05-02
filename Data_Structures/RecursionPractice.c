@@ -3,6 +3,8 @@
 #include <time.h>
 #include <limits.h>
 
+#define MAX_RAND_VAL 30
+
 int sum(int n)
 {
   if (n == 0)
@@ -186,6 +188,22 @@ int binary_search_recursive(int *array, int lo, int hi, int key)
     return binary_search_recursive(array, mid + 1, hi, key);
   else
     return 1;
+}
+
+int *create_array(int n)
+{
+  int i, *array;
+
+  if (n <= 0)
+    return NULL;
+
+  array = malloc(sizeof(int) * n);
+
+  for(i = 0; i < n; i++)
+    array[i] = rand() % MAX_RAND_VAL + 1;
+
+  return array;
+
 }
 
 int main(void)
