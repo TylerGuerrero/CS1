@@ -1,74 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <limits.h>
+#include <time.h>
 
 #define EMPTY_STACK_ERR INT_MIN
 
-// Stacks are LIFO structures (last in, first out), and they support the following operations:
-//
-// push()  -  push element onto the top of the stack
-// pop()  -  removes the top item from the stack and returns its value
-// isEmpty()  -  returns true of the stack is empty, false otherwise
-// isFull()  -  returns true if the stack is full, false otherwise
-// top(), peek()  -  returns the value at the top of the stack without popping it
-
-// 0 index of the array is the botto of the stack (push starting at 0 to n - 1 index)
-// n - 1 index is the top of the stack.  (pop at n - 1 index)
-
 typedef struct Stack
-  {
-  // The stack.
-  int  *array;
-  // How many current elements are in the stack.
+{
+  // The stack
+  int *array;
+  // How many current elements in the stack
   int size;
-  // The size of the stack.
+  // How big the stack is
   int capacity;
 } Stack;
 
 Stack *createStack(int capacity)
 {
   Stack *s = malloc(sizeof(Stack));
-  if (s == NULL)
-  {
-    printf("Could not allocate memory\n");
-    return NULL;
-  }
-
   s->array = malloc(sizeof(int) * capacity);
-  if (s->array == NULL)
-  {
-    printf("Could not allocate memory for the stack\n");
-    free(s);
-    return NULL;
-  }
-
   s->size = 0;
   s->capacity = capacity;
   return s;
-
 }
 
 Stack *destroyStack(Stack *s)
 {
   if (s == NULL)
-  {
-    printf("Empty Stack\n");
     return NULL;
-  }
-
-  if (s->array == NULL)
+  else if (s->array == NULL)
   {
-    printf("Empty Stack\n");
     free(s);
     return NULL;
   }
-
-  free(s->array);
-  free(s);
-
-  return NULL;
+  else
+  {
+    free(s->array);
+    free(s);
+    return NULL;
+  }
 }
 
 int isEmpty(Stack *s)
@@ -83,11 +53,8 @@ int isFull(Stack *s)
 
 void push(Stack *s, int data)
 {
-  if (isFull(s))
-  {
-    printf("Stack is Full\n");
+  if (isEmpty(s))
     return;
-  }
 
   s->array[s->size++] = data;
 }
@@ -95,10 +62,7 @@ void push(Stack *s, int data)
 int pop(Stack *s)
 {
   if (isEmpty(s))
-  {
-    printf("Stack is Empty\n");
     return EMPTY_STACK_ERR;
-  }
 
   return s->array[--s->size];
 }
@@ -106,17 +70,9 @@ int pop(Stack *s)
 int peek(Stack *s)
 {
   if (isEmpty(s))
-  {
-    printf("Stack is Empty\n");
     return EMPTY_STACK_ERR;
-  }
 
   return s->array[s->size - 1];
-}
-
-int front(Stack *s)
-{
-  return peek(s);
 }
 
 void printStack(Stack *s)
@@ -124,16 +80,13 @@ void printStack(Stack *s)
   int i;
 
   if (isEmpty(s))
-  {
-    printf("Empty Stack\n");
     return;
-  }
 
   for (i = s->size - 1; i >= 0; i--)
   {
     printf("+--------+\n");
     printf("|  %-4d  |%s\n", s->array[i],
-    (i == s->size - 1) ? "<- Top of the stack" : "");
+    (i == s->size - 1) ? " <- Top of the stack" : "");
     printf("+--------+\n");
   }
 }
@@ -232,12 +185,10 @@ int main(void)
 			break;
 		}
 
-		// Print the stack after each command.
 		printStack(myStack);
 		printf("\n");
 	}
 
-	// Clean up after yourself.
 	destroyStack(myStack);
 
 	return 0;

@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <limits.h>
 
 #define EMPTY_STACK_ERR INT_MIN
+#define MAX_RAND_VAL 1000
 
 // Stacks are LIFO structures (last in, first out), and they support the following operations:
-//
+
 // push()  -  push element onto the top of the stack
 // pop()  -  removes the top item from the stack and returns its value
 // isEmpty()  -  returns true of the stack is empty, false otherwise
@@ -30,12 +32,6 @@ typedef struct Stack
 Stack *createStack(void)
 {
   Stack *s = malloc(sizeof(Stack));
-  if (s == NULL)
-  {
-    printf("Could not allocate memory\n");
-    return NULL;
-  }
-
   s->head = NULL;
   s->size = 0;
 
@@ -45,15 +41,8 @@ Stack *createStack(void)
 node *create_node(int data)
 {
   node *new_node = malloc(sizeof(node));
-  if (new_node == NULL)
-  {
-    printf("Could not allocate memory\n");
-    return NULL;
-  }
-
-  new_node->data = data;
   new_node->next = NULL;
-
+  new_node->data = data;
   return new_node;
 }
 
@@ -66,23 +55,12 @@ node *destroy_linked_list(node *head)
   free(head);
 
   return NULL;
-
 }
 
 Stack *destroyStack(Stack *s)
 {
   if (s == NULL)
-  {
-    printf("Empty Stack can't destroy\n");
     return NULL;
-  }
-
-  if (s->head == NULL)
-  {
-    printf("Empty Stack\n");
-    free(s);
-    return NULL;
-  }
 
   destroy_linked_list(s->head);
   free(s);
@@ -95,81 +73,117 @@ int isEmpty(Stack *s)
   return (s == NULL || s->head == NULL || s->size == 0);
 }
 
-// head insert.
+int isFull(Stack *s)
+{
+  return 0;
+}
+
 void push(Stack *s, int data)
 {
   node *new_head;
 
   if (s == NULL)
+    return;
+
+  else if (s->head == NULL)
   {
-    printf("Can't push will s as NULL\n");
+    new_head = create_node(data);
+    s->head = new_head;
+    s->size++;
     return;
   }
-
-  if (s->head == NULL)
+  else
   {
-    s->head = create_node(data);
-    return;
+    new_head = create_node(data);
+    new_head->next = s->head;
+    s->head = new_head;
+    s->size++;
   }
-
-  new_head = create_node(data);
-  new_head->next = s->head;
-  s->head = new_head;
-  s->size++;
-
 }
 
 int pop(Stack *s)
 {
   int retval;
-  node *current;
+  node *temp;
 
   if (isEmpty(s))
     return EMPTY_STACK_ERR;
 
   retval = s->head->data;
-  current = s->head->next;
+  temp = s->head->next;
   free(s->head);
-  s->head = current;
+  s->head = temp;
   s->size--;
 
   return retval;
-
 }
-
 int peek(Stack *s)
 {
   if (isEmpty(s))
     return EMPTY_STACK_ERR;
 
   return s->head->data;
+}
 
+int front(Stack *s)
+{
+  return peek(s);
 }
 
 void print_stack(Stack *s)
 {
-  int i;
   node *current;
+  int i;
 
   if (isEmpty(s))
     return;
 
   i = s->size - 1;
-  current = s->head;
-  while (current != NULL && i >= 0)
+  for (current = s->head; current != NULL && i >= 0; current = current->next)
   {
     printf("+--------+\n");
     printf("|  %-4d  |%s\n", current->data,
-    (i == s->size) ? "<- top of the stack" : "");
+    (i == s->size - 1) ? " <- Top of the Stack" : "");
     printf("+--------+\n");
-
-    current = current->next;
     i--;
   }
+  printf("\n\n");
 
+}
+
+int *create_array_with_nums(int n)
+{
+  int i;
+  int *array = malloc(sizeof(int) * n);
+  srand(time(NULL));
+
+  for (i = 0; i < n; i++)
+    array[i] = rand() % MAX_RAND_VAL + 1;
+
+  return array;
 }
 
 int main(void)
 {
+  int i, n = 12;
+  int *array = create_array_with_nums(n);
+  Stack *s = createStack();
+  int p;
+
+  for (i = 0; i < n; i++)
+    push(s, array[i]);
+
+  p = peek(s);
+  printf("%d\n\n", p);
+
+  print_stack(s);
+
+  while(!isEmpty(s))
+    printf("Popping %d\n", pop(s));
+
+  s = destroyStack(s);
+  free(array);
+
+
   return 0;
 }
